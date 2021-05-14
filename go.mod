@@ -1,4 +1,4 @@
-module github.com/dfuse-io/thegraphhose
+module github.com/streamingfast/thegraphhose
 
 go 1.13
 
