@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	thegraph "github.com/dfuse-io/thegraphhose"
 	"github.com/spf13/cobra"
+	thegraph "github.com/streamingfast/thegraphhose"
 	"gopkg.in/yaml.v3"
 )
 

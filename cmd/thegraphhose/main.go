@@ -10,7 +10,7 @@ var rootCmd = &cobra.Command{Use: "thegraphhose", Short: "Registrator main entry
 var metricsListenAddr = "localhost:9102"
 var pprofListenAddr = "localhost:6060"
 
-var zlog = logging.NewSimpleLogger("thegraphhose", "github.com/dfuse-io/thegraphhose/cmd/thegraphhose")
+var zlog = logging.NewSimpleLogger("thegraphhose", "github.com/streamingfast/thegraphhose/cmd/thegraphhose")
 
 func init() {
 	logging.Override(zlog)

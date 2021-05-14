@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	thegraph "github.com/dfuse-io/thegraphhose"
+	thegraph "github.com/streamingfast/thegraphhose"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
