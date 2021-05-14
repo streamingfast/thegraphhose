@@ -1,0 +1,63 @@
+package intrinsics
+
+import (
+    "fmt"
+    "github.com/pkg/errors"
+    "github.com/wasmerio/go-ext-wasm/wasmer"
+    "unsafe"
+)
+
+// #include <stdlib.h>
+//
+// extern void eosio_abort(void *context);
+// extern void eosio_assert(void *context, int32_t condition, int32_t msg);
+// extern void eosio_assert_message(void *context, int32_t condition, int32_t msg, int32_t msg_len);
+// extern void eosio_assert_code(void *context, int32_t condition, int64_t error_code);
+// extern void eosio_exit(void *context, int32_t code);
+import "C"
+
+func init() {
+    intrinsicsImports.Append("abort", eosio_abort, C.eosio_abort)
+    intrinsicsImports.Append("eosio_assert", eosio_assert, C.eosio_assert)
+    intrinsicsImports.Append("eosio_assert_message", eosio_assert_message, C.eosio_assert_message)
+    intrinsicsImports.Append("eosio_assert_code", eosio_assert_code, C.eosio_assert_code)
+    intrinsicsImports.Append("eosio_exit", eosio_exit, C.eosio_exit)
+}
+
+//export eosio_abort
+func eosio_abort(context unsafe.Pointer) {
+    panic(ErrProgramSelfAborted)
+}
+
+//export eosio_assert
+func eosio_assert(context unsafe.Pointer, condition int32, msg int32) {
+    instance := wasmer.IntoInstanceContext(context)
+    if condition != 1 {
+        messsage, err := ReadCStringAtOffset(instance.Memory().Data(), msg)
+        CheckError(err, "unable to read string")
+        panic(errors.Wrap(ErrProgramAssertionFailed, messsage))
+    }
+}
+
+//export eosio_assert_message
+func eosio_assert_message(context unsafe.Pointer, condition int32, msg int32, msg_len int32) {
+    instance := wasmer.IntoInstanceContext(context)
+    if condition != 1 {
+        message, err := ReadMemoryRangeAsStringOfLength(instance.Memory().Data(), msg, msg_len)
+        CheckError(err, "unable to read string")
+        panic(errors.Wrap(ErrProgramAssertionFailed, message))
+    }
+}
+
+//export eosio_assert_code
+func eosio_assert_code(context unsafe.Pointer, condition int32, error_code int64) {
+    if condition != 1 {
+        panic(errors.Wrap(ErrProgramAssertionFailed, fmt.Sprintf("with error code %d", error_code)))
+    }
+}
+
+//export eosio_exit
+func eosio_exit(context unsafe.Pointer, code int32) {
+    panic(errors.Wrap(ErrProgramSelfExited, fmt.Sprintf("with exit code %d", code)))
+}
+

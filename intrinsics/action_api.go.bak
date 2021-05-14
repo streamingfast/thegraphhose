@@ -1,0 +1,43 @@
+package intrinsics
+
+import (
+    "github.com/wasmerio/go-ext-wasm/wasmer"
+    "unsafe"
+)
+
+// #include <stdlib.h>
+//
+// extern int32_t read_action_data(void *context, int32_t memory, int32_t buffer_size);
+// extern int32_t action_data_size(void *context);
+// extern int64_t current_receiver(void *context);
+import "C"
+
+func init() {
+    intrinsicsImports.Append("read_action_data", read_action_data, C.read_action_data)
+    intrinsicsImports.Append("action_data_size", action_data_size, C.action_data_size)
+    intrinsicsImports.Append("current_receiver", current_receiver, C.current_receiver)
+}
+
+//export read_action_data
+func read_action_data(context unsafe.Pointer, memory int32, buffer_size int32) int32 {
+    err := WriteMemoryRange(GetMemoryFromContext(context), UUUUUUURG_EncodedActionData, memory, buffer_size)
+    CheckError(err, "unable to perform memcpy")
+
+    return buffer_size
+}
+
+//export action_data_size
+func action_data_size(context unsafe.Pointer) int32 {
+    //instanceContext := wasmer.IntoInstanceContext(context)
+    //applyContext := (* ApplyContext)(instanceContext.Data())
+    //encodedActionData := applyContext.GetActionData()
+    return int32(len(UUUUUUURG_EncodedActionData))
+}
+
+//export current_receiver
+func current_receiver(context unsafe.Pointer) int64 {
+    instanceContext := wasmer.IntoInstanceContext(context)
+    applyContext := (* ApplyContext)(instanceContext.Data())
+    return applyContext.Receiver
+}
+
