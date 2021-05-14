@@ -1,8 +1,0 @@
-package intrinsics
-
-import "github.com/pkg/errors"
-
-var ErrProgramSelfAborted = errors.New("Program self-aborted")
-var ErrProgramSelfExited = errors.New("Program self-exited")
-var ErrProgramAssertionFailed = errors.New("Program assertion failed")
-var ErrOutOfBoundsMemoryRead = errors.New("Program tried to read out of bounds of its memory space")
