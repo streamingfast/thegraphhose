@@ -88,6 +88,8 @@ func (e *DefaultEnvironment) segment(offset int32, length int32) ([]byte, error)
 }
 
 func (e *DefaultEnvironment) ReadString(offset int32) (string, error) {
+	e.LogSegment("Data +size type?", offset-12, 16)
+
 	characterCount, err := e.readI32("string length", offset)
 	if err != nil {
 		return "", fmt.Errorf("read length: %w", err)
@@ -443,14 +445,13 @@ func (h AscString) ToPtr(heap *AscHeap) int32 {
 
 	encoding.PutUint32(bytes, uint32(len(h)))
 	stringBytes := bytes[4:]
-	for i, b := range h {
+
+	characters := utf16.Encode([]rune(h))
+	for i, b := range characters {
 		offset := i * 2
 
-		// FIXME: This is totally invalid for any characters outside the ASCII range, we need to actually
-		//        transform to UTF16-LE encoding instead, so we kind of need to iterate over the characters,
-		//        get the actual Unicode code point and deal with it from there.
-		stringBytes[offset] = byte(b)
-		stringBytes[offset+1] = 0
+		stringBytes[offset] = byte(b & 0x00FF)
+		stringBytes[offset+1] = byte((b & 0xFF00) >> 8)
 	}
 
 	return heap.Write(bytes)
