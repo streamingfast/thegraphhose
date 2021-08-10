@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dfuse-io/dmetrics"
+	"github.com/streamingfast/dmetrics"
 	"go.uber.org/zap"
 )
 

@@ -3,13 +3,13 @@ module github.com/streamingfast/thegraphhose
 go 1.13
 
 require (
-	github.com/dfuse-io/dmetrics v0.0.0-20200508170817-3b8cb01fee68
 	github.com/dfuse-io/logging v0.0.0-20210109005628-b97a57253f70
 	github.com/eoscanada/eos-go v0.8.13
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.3.2
+	github.com/streamingfast/dmetrics v0.0.0-20210810172555-564d623b116f
 	github.com/stretchr/testify v1.7.0
 	github.com/test-go/testify v1.1.4
 	github.com/tidwall/gjson v1.2.1 // indirect
